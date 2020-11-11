@@ -1,4 +1,6 @@
+import 'package:Taxi/Assistants/requestAssistant.dart';
 import 'package:Taxi/DataHandler/appData.dart';
+import 'package:Taxi/configMaps.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -107,6 +109,9 @@ class _SearchScreenState extends State<SearchScreen> {
                           child: Padding(
                             padding: EdgeInsets.all(3.0),
                             child: TextField(
+                              onChanged: (val) {
+                                findPlace(val);
+                              },
                               controller: dropOffTextEditingController,
                               decoration: InputDecoration(
                                 hintText: "Where to?",
@@ -128,5 +133,20 @@ class _SearchScreenState extends State<SearchScreen> {
         ],
       ),
     );
+  }
+
+  void findPlace(String placeName) async {
+    if (placeName.length > 1) {
+      String autoCompleteUrl =
+          "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$placeName&key=$mapKey&sessiontoken=1234567890&components=country:bw";
+
+      var res = await RequestAssistants.getRequest(autoCompleteUrl);
+
+      if (res == "failed") {
+        return;
+      }
+      print("Places Predictions Response :: ");
+      print(res);
+    }
   }
 }
